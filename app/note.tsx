@@ -4,33 +4,40 @@ import {
   Button,
   KeyboardAvoidingView,
   Platform,
+  Alert,
 } from "react-native";
-import { useState, useContext } from "react";
+import { useState } from "react";
 import { useRouter } from "expo-router";
-import { NotesContext } from "./_layout";
+import { supabase } from "../lib/supabase";
 
 export default function Note() {
   const router = useRouter();
-  const { notes, setNotes } = useContext(NotesContext);
-
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
-  const saveNote = () => {
-    const newNote = {
-      id: Date.now().toString(),
-      title,
-      content,
-    };
+  const saveNote = async () => {
+    if (!title.trim()) {
+      Alert.alert("Title required");
+      return;
+    }
 
-    setNotes([...notes, newNote]);
+    const { error } = await supabase.from("notes").insert({
+      title: title.trim(),
+      content: content.trim(),
+    });
+
+    if (error) {
+      Alert.alert("error", error.message);
+      return;
+    }
+
     router.replace("/");
   };
 
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, padding: 20 }}
-      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
       <TextInput
         placeholder="Title"
@@ -44,12 +51,7 @@ export default function Note() {
         value={content}
         onChangeText={setContent}
         multiline
-        style={{
-          borderWidth: 1,
-          padding: 10,
-          height: 200,
-          marginBottom: 20,
-        }}
+        style={{ borderWidth: 1, padding: 10, height: 200, marginBottom: 20 }}
       />
 
       <Button title="Save" onPress={saveNote} />

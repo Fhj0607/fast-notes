@@ -1,23 +1,40 @@
 import { View, Text, Button } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useContext } from "react";
-import { NotesContext } from "../_layout";
+import { useEffect, useState } from "react";
+import { supabase } from "../../lib/supabase";
+
+type Notes = {
+  id: string;
+  title: string;
+  content: string | null;
+  created_at: string;
+};
 
 export default function NoteDetail() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
-  const { notes } = useContext(NotesContext);
+  const [note, setNote] = useState<Notes | null>(null);
 
-  const note = notes.find((n: any) => n.id === id);
+  useEffect(() => {
+    const load = async () => {
+      const { data, error } = await supabase
+        .from("notes")
+        .select("id,title,content,created_at")
+        .eq("id", id)
+        .single();
 
-  if (!note) return <Text>Note not found</Text>;
+      if (!error) setNote(data);
+    };
+
+    load();
+  }, [id]);
+
+  if (!note) return null;
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
       <Text style={{ fontSize: 24, fontWeight: "bold" }}>{note.title}</Text>
-
       <Text style={{ marginTop: 20 }}>{note.content}</Text>
-
       <Button title="Back" onPress={() => router.back()} />
     </View>
   );
