@@ -1,4 +1,12 @@
-import { View, Text, Pressable, TextInput, Alert } from "react-native";
+import {
+  View,
+  Text,
+  Pressable,
+  TextInput,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+} from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
@@ -57,8 +65,32 @@ export default function NoteDetail() {
     setIsEditing(false);
   };
 
+  const onDelete = async () => {
+    if (!id) return <Text style={{ padding: 20 }}>Missing id</Text>;
+    if (!note) return <Text style={{ padding: 20 }}>Loading...</Text>;
+    const { error } = await supabase.from("notes").delete().eq("id", note.id);
+
+    if (error) {
+      Alert.alert("Delete failed", error.message);
+      return;
+    }
+
+    router.back();
+  };
+
+  const onCancel = () => {
+    if (!id) return <Text style={{ padding: 20 }}>Missing id</Text>;
+    if (!note) return <Text style={{ padding: 20 }}>Loading...</Text>;
+
+    setDraft(note.content ?? "");
+    setIsEditing(false);
+  };
+
   return (
-    <View style={{ flex: 1, padding: 20 }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1, padding: 20 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <Text style={{ fontSize: 24, fontWeight: "bold" }}>{note.title}</Text>
       {!isEditing ? (
         <Text style={{ marginTop: 20 }}>{note?.content ?? ""}</Text>
@@ -70,14 +102,34 @@ export default function NoteDetail() {
           onChangeText={setDraft}
         />
       )}
-      <View style={{ position: "absolute", bottom: 20, alignSelf: "center" }}>
-        <Pressable onPress={() => (isEditing ? onSave() : setIsEditing(true))}>
-          {!isEditing ? <Text>Edit</Text> : <Text>Save</Text>}
+      <View style={{ marginTop: 20 }}>
+        <Pressable
+          style={{ margin: 10, padding: 10, backgroundColor: "#1E90FF" }}
+          onPress={() => (isEditing ? onSave() : setIsEditing(true))}
+        >
+          {!isEditing ? (
+            <Text style={{ color: "white", textAlign: "center" }}>EDIT</Text>
+          ) : (
+            <Text style={{ color: "white", textAlign: "center" }}>SAVE</Text>
+          )}
         </Pressable>
-        <Pressable onPress={() => router.back()}>
-          <Text>Back</Text>
+        <Pressable
+          style={{ margin: 10, padding: 10, backgroundColor: "#1E90FF" }}
+          onPress={() => (isEditing ? onCancel() : router.back())}
+        >
+          {!isEditing ? (
+            <Text style={{ color: "white", textAlign: "center" }}>BACK</Text>
+          ) : (
+            <Text style={{ color: "white", textAlign: "center" }}>CANCEL</Text>
+          )}
+        </Pressable>
+
+        <Pressable
+          style={{ margin: 10, padding: 10, backgroundColor: "#c0191F" }} onPress={onDelete}
+        >
+          <Text style={{ color: "white", textAlign: "center" }}>DELETE</Text>
         </Pressable>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }

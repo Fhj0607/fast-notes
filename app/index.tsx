@@ -1,15 +1,15 @@
 import {
   View,
   Text,
-  Button,
+  Platform,
+  KeyboardAvoidingView,
   FlatList,
   Pressable,
-  RefreshControl,
 } from "react-native";
 import { useRouter } from "expo-router";
-import { useEffect, useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
+import { useEffect, useState, useCallback } from "react";
 import { supabase } from "../lib/supabase";
-import { Session } from "@supabase/supabase-js";
 
 type Notes = {
   id: string;
@@ -23,7 +23,6 @@ export default function Index() {
 
   const [notes, setNotes] = useState<Notes[]>([]);
   const [loading, setLoading] = useState(false);
-  const [session, setSession] = useState<Session | null>(null);
 
   const loadNotes = async () => {
     setLoading(true);
@@ -38,9 +37,11 @@ export default function Index() {
     setLoading(false);
   };
 
-  useEffect(() => {
-    loadNotes();
-  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      loadNotes();
+    }, []),
+  );
 
   const logout = async () => {
     await supabase.auth.signOut();
@@ -48,7 +49,10 @@ export default function Index() {
   };
 
   return (
-    <View style={{ flex: 1, padding: 20 }}>
+    <KeyboardAvoidingView
+      style={{ flex: 1, padding: 20 }}
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+    >
       <Text
         style={{ position: "absolute", top: 20, left: 20, fontWeight: "bold" }}
       >
@@ -57,6 +61,8 @@ export default function Index() {
       <FlatList
         style={{ paddingTop: 30 }}
         data={notes}
+        refreshing={loading}
+        onRefresh={loadNotes}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <Pressable
@@ -71,11 +77,18 @@ export default function Index() {
           </Pressable>
         )}
       />
-
-      <View style={{ position: "absolute", bottom: 40, alignSelf: "center" }}>
-        <Button title="Add Note" onPress={() => router.push("/note")} />
-        <Button title="Logout" onPress={logout} />
-      </View>
-    </View>
+      <Pressable
+        style={{ margin: 10, padding: 10, backgroundColor: "#1E90FF" }}
+        onPress={() => router.push("/note")}
+      >
+        <Text style={{ color: "white", textAlign: "center" }}>ADD NOTE</Text>
+      </Pressable>
+      <Pressable
+        style={{ margin: 10, padding: 10, backgroundColor: "#1E90FF" }}
+        onPress={logout}
+      >
+        <Text style={{ color: "white", textAlign: "center" }}>LOGOUT</Text>
+      </Pressable>
+    </KeyboardAvoidingView>
   );
 }

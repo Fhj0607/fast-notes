@@ -1,10 +1,12 @@
 import {
   View,
+  Text,
   TextInput,
   Button,
   KeyboardAvoidingView,
   Platform,
   Alert,
+  Pressable,
 } from "react-native";
 import { useState } from "react";
 import { useRouter } from "expo-router";
@@ -54,7 +56,18 @@ export default function Note() {
         style={{ borderWidth: 1, padding: 10, height: 200, marginBottom: 20 }}
       />
 
-      <Button title="Save" onPress={saveNote} />
+      <Pressable
+        style={{ margin: 10, padding: 10, backgroundColor: "#1E90FF" }}
+        onPress={saveNote}
+      >
+        <Text style={{ color: "white", textAlign: "center" }}>SAVE</Text>
+      </Pressable>
+      <Pressable
+        style={{ margin: 10, padding: 10, backgroundColor: "#1E90FF" }}
+        onPress={() => router.back()}
+      >
+        <Text style={{ color: "white", textAlign: "center" }}>BACK</Text>
+      </Pressable>
     </KeyboardAvoidingView>
   );
 }
