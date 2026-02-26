@@ -23,7 +23,6 @@ export default function Index() {
 
   const [notes, setNotes] = useState<Notes[]>([]);
   const [loading, setLoading] = useState(false);
-  
   const [session, setSession] = useState<Session | null>(null);
 
   const loadNotes = async () => {
@@ -50,7 +49,13 @@ export default function Index() {
 
   return (
     <View style={{ flex: 1, padding: 20 }}>
+      <Text
+        style={{ position: "absolute", top: 20, left: 20, fontWeight: "bold" }}
+      >
+        Job Notes
+      </Text>
       <FlatList
+        style={{ paddingTop: 30 }}
         data={notes}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
