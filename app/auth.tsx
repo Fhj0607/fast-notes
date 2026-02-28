@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, TextInput, Button } from "react-native";
+import { View, TextInput, Pressable, Text } from "react-native";
 import { supabase } from "../lib/supabase";
 import { useRouter } from "expo-router";
 
@@ -15,7 +15,7 @@ export default function Auth() {
     });
 
     if (error) {
-      alert(error.message)
+      alert(error.message);
       return;
     }
 
@@ -31,7 +31,7 @@ export default function Auth() {
     });
 
     if (error) {
-      alert(error.message)
+      alert(error.message);
       return;
     }
 
@@ -48,9 +48,18 @@ export default function Auth() {
         onChangeText={setPassword}
         secureTextEntry
       />
-
-      <Button title="Signup" onPress={signUp} />
-      <Button title="Login" onPress={signIn} />
+      <Pressable
+        style={{ margin: 10, padding: 10, backgroundColor: "#1E90FF" }}
+        onPress={signUp}
+      >
+        <Text style={{ color: "white", textAlign: "center" }}>Sign-up</Text>
+      </Pressable>
+      <Pressable
+        style={{ margin: 10, padding: 10, backgroundColor: "#1E90FF" }}
+        onPress={signIn}
+      >
+        <Text style={{ color: "white", textAlign: "center" }}>Sign-in</Text>
+      </Pressable>
     </View>
   );
 }

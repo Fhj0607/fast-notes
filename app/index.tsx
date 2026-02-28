@@ -16,6 +16,7 @@ type Notes = {
   title: string;
   content: string | null;
   created_at: string;
+  updated_at: string | null;
 };
 
 export default function Index() {
@@ -24,12 +25,20 @@ export default function Index() {
   const [notes, setNotes] = useState<Notes[]>([]);
   const [loading, setLoading] = useState(false);
 
+  const checkSession = async () => {
+    const { data } = await supabase.auth.getSession();
+
+    if (!data.session) {
+      router.replace("/auth");
+    }
+  };
+
   const loadNotes = async () => {
     setLoading(true);
 
     const { data, error } = await supabase
       .from("notes")
-      .select("id,title,content,created_at")
+      .select("id,title,content,created_at,updated_at")
       .order("created_at", { ascending: false });
 
     if (!error && data) setNotes(data);
@@ -47,6 +56,10 @@ export default function Index() {
     await supabase.auth.signOut();
     router.replace("/auth");
   };
+
+  useEffect(() => {
+    checkSession();
+  }, []);
 
   return (
     <KeyboardAvoidingView

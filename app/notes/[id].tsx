@@ -14,8 +14,10 @@ import { supabase } from "../../lib/supabase";
 type Notes = {
   id: string;
   title: string;
-  content: string | null;
+  content: string;
   created_at: string;
+  updated_at: string | null;
+  user_id: string;
 };
 
 export default function NoteDetail() {
@@ -26,17 +28,29 @@ export default function NoteDetail() {
   const [draft, setDraft] = useState("");
 
   useEffect(() => {
-    const load = async () => {
+    if (!id) return;
+
+    const loadNote = async () => {
       const { data, error } = await supabase
         .from("notes")
-        .select("id,title,content,created_at")
+        .select(
+          `
+          id,user_id,title,content,created_at,updated_at
+        `,
+        )
         .eq("id", id)
-        .single();
+        .returns<Notes>()
+        .maybeSingle();
 
-      if (!error) setNote(data);
+      if (error) {
+        Alert.alert("load failed", error.message);
+        return;
+      }
+
+      setNote(data);
     };
 
-    load();
+    loadNote();
   }, [id]);
 
   useEffect(() => {
@@ -45,17 +59,21 @@ export default function NoteDetail() {
     }
   }, [note]);
 
-  if (!note) return null;
-  if (!id) return null;
+  if (!note || !id) return null;
 
   const onSave = async () => {
-    if (!id) return <Text style={{ padding: 20 }}>Missing id</Text>;
-    if (!note) return <Text style={{ padding: 20 }}>Loading...</Text>;
+    if (!id) return;
+    if (!note) return;
     const { data, error } = await supabase
       .from("notes")
       .update({ content: draft })
       .eq("id", note.id)
-      .select("id,title,content,created_at")
+      .select(
+        `
+        id,user_id,title,content,created_at,updated_at
+    `,
+      )
+      .returns<Notes>()
       .single();
     if (error) {
       Alert.alert("save failed", error.message);
@@ -66,8 +84,8 @@ export default function NoteDetail() {
   };
 
   const onDelete = async () => {
-    if (!id) return <Text style={{ padding: 20 }}>Missing id</Text>;
-    if (!note) return <Text style={{ padding: 20 }}>Loading...</Text>;
+    if (!id) return;
+    if (!note) return;
     const { error } = await supabase.from("notes").delete().eq("id", note.id);
 
     if (error) {
@@ -75,12 +93,17 @@ export default function NoteDetail() {
       return;
     }
 
-    router.back();
+    Alert.alert("Success!", "Your note was deleted.", [
+      {
+        text: "OK",
+        onPress: () => router.back(),
+      },
+    ]);
   };
 
   const onCancel = () => {
-    if (!id) return <Text style={{ padding: 20 }}>Missing id</Text>;
-    if (!note) return <Text style={{ padding: 20 }}>Loading...</Text>;
+    if (!id) return;
+    if (!note) return;
 
     setDraft(note.content ?? "");
     setIsEditing(false);
@@ -102,6 +125,13 @@ export default function NoteDetail() {
           onChangeText={setDraft}
         />
       )}
+
+      <Text style={{ textAlign: "right", marginTop: 5 }}>
+        Last edited:{" "}
+        {note?.updated_at
+          ? new Date(note.updated_at).toLocaleString()
+          : "Not edited"}{" "}
+      </Text>
       <View style={{ marginTop: 20 }}>
         <Pressable
           style={{ margin: 10, padding: 10, backgroundColor: "#1E90FF" }}
@@ -125,7 +155,8 @@ export default function NoteDetail() {
         </Pressable>
 
         <Pressable
-          style={{ margin: 10, padding: 10, backgroundColor: "#c0191F" }} onPress={onDelete}
+          style={{ margin: 10, padding: 10, backgroundColor: "#c0191F" }}
+          onPress={onDelete}
         >
           <Text style={{ color: "white", textAlign: "center" }}>DELETE</Text>
         </Pressable>

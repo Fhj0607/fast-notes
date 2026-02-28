@@ -18,8 +18,8 @@ export default function Note() {
   const [content, setContent] = useState("");
 
   const saveNote = async () => {
-    if (!title.trim()) {
-      Alert.alert("Title required");
+    if (!title.trim() || !content.trim()) {
+      Alert.alert("Title or content missing...");
       return;
     }
 
@@ -33,7 +33,12 @@ export default function Note() {
       return;
     }
 
-    router.replace("/");
+    Alert.alert("Success!", "Your note was uploaded.", [
+      {
+        text: "OK",
+        onPress: () => router.replace("/"),
+      },
+    ]);
   };
 
   return (
