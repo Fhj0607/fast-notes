@@ -33,3 +33,5 @@ Visualization
 - (10%) Both diagrams can be viewed in the provided .pdf 
 
 Total: 105%
+
+Comment: You might have noticed the delete function doesn't prompt confirmation. In order to save me some time, and not having to battle with supabase email limits, I'll just explain it here. This function/prompt is implemented in the current version you have received.

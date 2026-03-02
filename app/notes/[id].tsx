@@ -83,22 +83,42 @@ export default function NoteDetail() {
     setIsEditing(false);
   };
 
-  const onDelete = async () => {
+  const onDelete = () => {
     if (!id) return;
     if (!note) return;
-    const { error } = await supabase.from("notes").delete().eq("id", note.id);
 
-    if (error) {
-      Alert.alert("Delete failed", error.message);
-      return;
-    }
+    Alert.alert(
+      "Please confirm",
+      "Are you sure you want to delete this note?",
+      [
+        {
+          text: "DELETE",
+          style: "destructive",
+          onPress: async () => {
+            const { error } = await supabase
+              .from("notes")
+              .delete()
+              .eq("id", note.id);
 
-    Alert.alert("Success!", "Your note was deleted.", [
-      {
-        text: "OK",
-        onPress: () => router.back(),
-      },
-    ]);
+            if (error) {
+              Alert.alert("Delete failed", error.message);
+              return;
+            }
+
+            Alert.alert("Success!", "Your note was deleted.", [
+              {
+                text: "OK",
+                onPress: () => router.replace("/"),
+              },
+            ]);
+          },
+        },
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+      ],
+    );
   };
 
   const onCancel = () => {
