@@ -1,8 +1,6 @@
 import {
-  View,
   Text,
   TextInput,
-  Button,
   KeyboardAvoidingView,
   Platform,
   Alert,
