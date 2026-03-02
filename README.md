@@ -17,3 +17,19 @@ Run the app (emulator must already be running)
 
 Then open the Android emulator or scan the QR code with Expo Go.
 
+
+Requirements met:
+
+Auth
+- (35%) Sign-up, Email Template, Login/Logout, Credentials
+
+DB
+- (45%) Users stay logged in and full CRUD functionality is provided
+
+Validation
+- (15%) Title and content fields are validated before inserted, and the user is alerted afterwards
+
+Visualization
+- (10%) Both diagrams can be viewed in the provided .pdf 
+
+Total: 105%

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { View, TextInput, Pressable, Text } from "react-native";
+import { View, TextInput, Pressable, Text, Alert } from "react-native";
 import { supabase } from "../lib/supabase";
 import { useRouter } from "expo-router";
 
@@ -14,14 +14,15 @@ export default function Auth() {
       password,
     });
 
+    console.log("SIGNUP DATA:", data);
+    console.log("SIGNUP ERROR:", error);
+
     if (error) {
-      alert(error.message);
+      Alert.alert(error.message);
       return;
     }
 
-    if (data.session) {
-      router.replace("/");
-    }
+    Alert.alert("Check your email to confirm your account.");
   };
 
   const signIn = async () => {
