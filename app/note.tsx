@@ -59,7 +59,7 @@ export default function Note() {
       keyboardVerticalOffset={Platform.OS === "ios" ? 80 : 0}
     >
       <ScrollView
-        contentContainerStyle={{ padding: 20, flexGrow: 1 }}
+        contentContainerStyle={{ flexGrow: 1, padding: 20, paddingBottom: 40 }}
         keyboardShouldPersistTaps="handled"
         alwaysBounceVertical={false}
       >
@@ -89,45 +89,44 @@ export default function Note() {
           }}
         />
 
-        {/* --- Image Preview Section --- */}
-        {imageUri ? (
+        {/* Image Preview Section */}
+        {imageUri && (
           <View style={{ alignItems: "center", marginBottom: 20 }}>
             <Image
               source={{ uri: imageUri }}
               style={{ width: "100%", height: 200, borderRadius: 10 }}
               resizeMode="cover"
             />
-            <Pressable onPress={() => setImageUri(null)}>
-              <Text style={{ color: "red", marginTop: 5 }}>Remove Image</Text>
+            <Pressable
+              onPress={() => setImageUri(null)}
+              style={{ marginTop: 8 }}
+            >
+              <Text style={{ color: "red", fontWeight: "600" }}>
+                Remove Image
+              </Text>
             </Pressable>
-          </View>
-        ) : (
-          <View
-            style={{
-              height: 100,
-              borderStyle: "dashed",
-              borderWidth: 1,
-              justifyContent: "center",
-              marginBottom: 20,
-            }}
-          >
-            <Text style={{ textAlign: "center", color: "#aaa" }}>
-              No image selected
-            </Text>
           </View>
         )}
 
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            marginBottom: 20,
+          }}
+        >
           <Pressable style={styles.blueBtnSmall} onPress={takePhoto}>
-            <Text style={styles.btnText}>Take Photo</Text>
+            <Text style={styles.btnText}>
+              {imageUri ? "Retake Photo" : "Take Photo"}
+            </Text>
           </Pressable>
+
           <Pressable style={styles.blueBtnSmall} onPress={pickImage}>
-            <Text style={styles.btnText}>Pick Image</Text>
+            <Text style={styles.btnText}>
+              {imageUri ? "Change Image" : "Pick Image"}
+            </Text>
           </Pressable>
         </View>
-
-        {/* Spacer */}
-        <View style={{ flex: 1 }} />
 
         <Pressable style={styles.blueBtn} onPress={saveNote}>
           <Text style={styles.btnText}>SAVE NOTE</Text>
