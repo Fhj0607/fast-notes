@@ -1,14 +1,13 @@
-import {
-  View,
-  Text,
-  Platform,
-  KeyboardAvoidingView,
-  FlatList,
-  Pressable,
-} from "react-native";
-import { useRouter } from "expo-router";
 import { useFocusEffect } from "@react-navigation/native";
-import { useEffect, useState, useCallback } from "react";
+import { useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
+import {
+  FlatList,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  Text
+} from "react-native";
 import { supabase } from "../lib/supabase";
 
 type Notes = {
@@ -64,7 +63,7 @@ export default function Index() {
   return (
     <KeyboardAvoidingView
       style={{ flex: 1, padding: 20 }}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
     >
       <Text
         style={{ position: "absolute", top: 20, left: 20, fontWeight: "bold" }}
