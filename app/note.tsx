@@ -61,6 +61,7 @@ export default function Note() {
       <ScrollView
         contentContainerStyle={{ padding: 20, flexGrow: 1 }}
         keyboardShouldPersistTaps="handled"
+        alwaysBounceVertical={false}
       >
         <TextInput
           placeholder="Title"
@@ -82,7 +83,7 @@ export default function Note() {
           style={{
             borderWidth: 1,
             padding: 10,
-            height: 150,
+            height: 120,
             marginBottom: 20,
             borderRadius: 8,
           }}

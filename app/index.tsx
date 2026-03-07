@@ -6,7 +6,8 @@ import {
   KeyboardAvoidingView,
   Platform,
   Pressable,
-  Text
+  StyleSheet,
+  Text,
 } from "react-native";
 import { supabase } from "../lib/supabase";
 
@@ -89,18 +90,28 @@ export default function Index() {
           </Pressable>
         )}
       />
-      <Pressable
-        style={{ margin: 10, padding: 10, backgroundColor: "#1E90FF" }}
-        onPress={() => router.push("/note")}
-      >
-        <Text style={{ color: "white", textAlign: "center" }}>ADD NOTE</Text>
+      <Pressable style={styles.blueBtn} onPress={() => router.push("/note")}>
+        <Text style={styles.btnText}>ADD NOTE</Text>
       </Pressable>
-      <Pressable
-        style={{ margin: 10, padding: 10, backgroundColor: "#1E90FF" }}
-        onPress={logout}
-      >
-        <Text style={{ color: "white", textAlign: "center" }}>LOGOUT</Text>
+      <Pressable style={styles.blueBtn} onPress={logout}>
+        <Text style={styles.btnText}>LOGOUT</Text>
       </Pressable>
     </KeyboardAvoidingView>
   );
 }
+
+const styles = StyleSheet.create({
+  blueBtn: {
+    marginVertical: 5,
+    padding: 15,
+    backgroundColor: "#1E90FF",
+    borderRadius: 8,
+  },
+  blueBtnSmall: {
+    flex: 0.48,
+    padding: 10,
+    backgroundColor: "#1E90FF",
+    borderRadius: 8,
+  },
+  btnText: { color: "white", textAlign: "center", fontWeight: "600" },
+});
