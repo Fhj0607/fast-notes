@@ -1,3 +1,5 @@
+import { File } from "expo-file-system";
+import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -27,29 +29,108 @@ export default function Note() {
       return;
     }
 
-    const { error } = await supabase.from("notes").insert({
-      title: title.trim(),
-      content: content.trim(),
-    });
+    try {
+      setUploading(true);
 
-    if (error) {
-      Alert.alert("error", error.message);
+      let imageUrl: string | null = null;
+
+      if (imageUri) {
+        imageUrl = await uploadImage(imageUri!);
+      }
+
+      const { error } = await supabase.from("notes").insert({
+        title: title.trim(),
+        content: content.trim(),
+        image_url: imageUrl,
+      });
+
+      if (error) throw error;
+
+      Alert.alert("Success!", "Your note was uploaded.", [
+        { text: "OK", onPress: () => router.replace("/") },
+      ]);
+    } catch (err: any) {
+      Alert.alert("Upload failed", err.message);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const takePhoto = async () => {
+    const permission = await ImagePicker.requestCameraPermissionsAsync();
+
+    if (!permission.granted) {
+      Alert.alert("Camera permission required");
       return;
     }
 
-    Alert.alert("Success!", "Your note was uploaded.", [
-      {
-        text: "OK",
-        onPress: () => router.replace("/"),
-      },
-    ]);
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ["images"],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
   };
 
-  const takePhoto = () => {
-    return;
+  const pickImage = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    if (!permission.granted) {
+      Alert.alert("Gallery permission required");
+      return;
+    }
+
+    const result = await ImagePicker.launchCameraAsync({
+      mediaTypes: ["images"],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setImageUri(result.assets[0].uri);
+    }
   };
-  const pickImage = () => {
-    return;
+
+  const uploadImage = async (uri: string): Promise<string | null> => {
+    const MAX_SIZE = 15 * 1024 * 1024;
+
+    const file = new File(uri);
+    const info = file.info();
+
+    if (!info.exists) {
+      return null;
+    }
+
+    const size = info.size ?? 0;
+
+    if (size > MAX_SIZE) {
+      throw new Error("Image must be under 15MB");
+    }
+
+    const fileExt = uri.split(".").pop()?.toLowerCase();
+    if (!["jpg", "jpeg", "png", "webp"].includes(fileExt || "")) {
+      throw new Error("Invalid image format");
+    }
+
+    const response = await fetch(uri);
+    const arrayBuffer = await response.arrayBuffer();
+
+    const fileName = `${Date.now()}.${fileExt}`;
+
+    const { error } = await supabase.storage
+      .from("note-images")
+      .upload(fileName, arrayBuffer, {
+        contentType: `image/${fileExt}`,
+      });
+
+    if (error) throw error;
+
+    const { data } = supabase.storage
+      .from("note-images")
+      .getPublicUrl(fileName);
+
+    return data.publicUrl;
   };
 
   return (
