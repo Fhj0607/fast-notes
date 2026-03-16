@@ -1,5 +1,6 @@
 import { File } from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
+import * as Notifications from "expo-notifications";
 import { useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -46,6 +47,14 @@ export default function Note() {
 
       if (error) throw error;
 
+      await Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Note saved",
+          body: `"${title.trim()}" was saved.`,
+        },
+        trigger: null,
+      });
+
       Alert.alert("Success!", "Your note was uploaded.", [
         { text: "OK", onPress: () => router.replace("/") },
       ]);
@@ -64,7 +73,7 @@ export default function Note() {
       return;
     }
 
-    const result = await ImagePicker.launchImageLibraryAsync({
+    const result = await ImagePicker.launchCameraAsync({
       mediaTypes: ["images"],
       quality: 1,
     });
@@ -82,7 +91,7 @@ export default function Note() {
       return;
     }
 
-    const result = await ImagePicker.launchCameraAsync({
+    const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ["images"],
       quality: 1,
     });
