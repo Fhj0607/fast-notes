@@ -117,20 +117,20 @@ export default function Note() {
       throw new Error("Image must be under 15MB");
     }
 
-    const fileExt = uri.split(".").pop()?.toLowerCase();
-    if (!["jpg", "jpeg", "png", "webp"].includes(fileExt || "")) {
+    const fileType = uri.split(".").pop()?.toLowerCase();
+    if (!["jpg", "jpeg", "png", "webp"].includes(fileType || "")) {
       throw new Error("Invalid image format");
     }
 
     const response = await fetch(uri);
     const arrayBuffer = await response.arrayBuffer();
 
-    const fileName = `${Date.now()}.${fileExt}`;
+    const fileName = `${Date.now()}.${fileType}`;
 
     const { error } = await supabase.storage
       .from("note-images")
       .upload(fileName, arrayBuffer, {
-        contentType: `image/${fileExt}`,
+        contentType: `image/${fileType}`,
       });
 
     if (error) throw error;
