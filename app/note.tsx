@@ -66,7 +66,7 @@ export default function Note() {
   };
 
   const takePhoto = async () => {
-    const permission = await ImagePicker.requestCameraPermissionsAsync();
+    const permission = await ImagePicker.requestCameraPermissionsAsync(); // (5%) Permissions
 
     if (!permission.granted) {
       Alert.alert("Camera permission required");
@@ -84,7 +84,7 @@ export default function Note() {
   };
 
   const pickImage = async () => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync(); // (5%) Permissions
 
     if (!permission.granted) {
       Alert.alert("Gallery permission required");
@@ -110,6 +110,8 @@ export default function Note() {
     if (!info.exists) {
       return null;
     }
+
+    // (10%) Client-side Validation: Checks size and format before uploading.
 
     const size = info.size ?? 0;
 
@@ -179,7 +181,6 @@ export default function Note() {
           }}
         />
 
-        {/* Image Preview Section */}
         {imageUri && (
           <View style={{ alignItems: "center", marginBottom: 20 }}>
             <Image

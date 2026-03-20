@@ -17,21 +17,9 @@ Run the app (emulator must already be running)
 
 Then open the Android emulator or scan the QR code with Expo Go.
 
-
 Requirements met:
 
-Auth
-- (35%) Sign-up, Email Template, Login/Logout, Credentials
-
-DB
-- (45%) Users stay logged in and full CRUD functionality is provided
-
-Validation
-- (15%) Title and content fields are validated before inserted, and the user is alerted afterwards
-
-Visualization
-- (10%) Both diagrams can be viewed in the provided .pdf 
-
-Total: 105%
-
-Comment: You might have noticed the delete function doesn't prompt confirmation. In order to save me some time, and not having to battle with supabase email limits, I'll just explain it here. This function/prompt is implemented in the current version you have received.
+- Camera | Permissions, Capture and Pick, and Preview (20%): Permissions are prompted before upload or using camera. I use dynamic pressables to allow user to navigate imagery.
+- Storage & Validation | Client-side validation, supabase upload, and DB linking (25%): file size and type is validated client-side before upload. Each image is stored in bucket storage inside supabase with unique names, and they are linked to notes-table in the image-url column.
+- UI/UX | Aspect ratio handling, and error Messaging (20%): Image ratio is controlled with style width and resizeMode, and file size and type is checked client-side before uploading with simple if-checks.
+- Notifications | Permissions, Trigger, and Content injection: Permissions prompted at app launch. I use local trigger.
