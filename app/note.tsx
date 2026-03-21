@@ -26,7 +26,7 @@ export default function Note() {
 
   const saveNote = async () => {
     if (!title.trim() || !content.trim()) {
-      Alert.alert("Title or content missing...");
+      Alert.alert("Please enter both a title and content.");
       return;
     }
 
@@ -55,11 +55,11 @@ export default function Note() {
         trigger: null,
       });
 
-      Alert.alert("Success!", "Your note was uploaded.", [
+      Alert.alert("Success!", "Your note was saved.", [
         { text: "OK", onPress: () => router.replace("/") },
       ]);
     } catch (err: any) {
-      Alert.alert("Upload failed", err.message);
+      Alert.alert("Failed to save note", err.message);
     } finally {
       setUploading(false);
     }
@@ -69,7 +69,7 @@ export default function Note() {
     const permission = await ImagePicker.requestCameraPermissionsAsync(); // (5%) Permissions
 
     if (!permission.granted) {
-      Alert.alert("Camera permission required");
+      Alert.alert("Camera permission required.");
       return;
     }
 
@@ -87,7 +87,7 @@ export default function Note() {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync(); // (5%) Permissions
 
     if (!permission.granted) {
-      Alert.alert("Gallery permission required");
+      Alert.alert("Gallery permission required.");
       return;
     }
 

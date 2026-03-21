@@ -9,7 +9,7 @@ export default function Auth() {
   const router = useRouter();
 
   const signUp = async () => {
-    const { data, error } = await supabase.auth.signUp({
+    const { error } = await supabase.auth.signUp({
       email,
       password,
     });
@@ -29,7 +29,7 @@ export default function Auth() {
     });
 
     if (error) {
-      alert(error.message);
+      Alert.alert("Sign in failed", error.message);
       return;
     }
 

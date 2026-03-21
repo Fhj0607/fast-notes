@@ -1,14 +1,14 @@
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useState } from "react";
 import {
-  View,
-  Text,
-  Pressable,
-  TextInput,
   Alert,
   KeyboardAvoidingView,
   Platform,
+  Pressable,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useState } from "react";
 import { supabase } from "../../lib/supabase";
 
 type Notes = {
@@ -43,7 +43,7 @@ export default function NoteDetail() {
         .maybeSingle();
 
       if (error) {
-        Alert.alert("load failed", error.message);
+        Alert.alert("Failed to load note.", error.message);
         return;
       }
 
@@ -76,7 +76,7 @@ export default function NoteDetail() {
       .returns<Notes>()
       .single();
     if (error) {
-      Alert.alert("save failed", error.message);
+      Alert.alert("Failed to save note.", error.message);
       return;
     }
     setNote(data);
