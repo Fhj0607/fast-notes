@@ -35,8 +35,6 @@ export default function RootLayout() {
           importance: Notifications.AndroidImportance.DEFAULT,
         });
       }
-
-      console.log("Notification permission:", finalStatus);
     };
 
     setupNotifications();

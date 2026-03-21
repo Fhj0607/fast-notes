@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { View, TextInput, Pressable, Text, Alert } from "react-native";
-import { supabase } from "../lib/supabase";
 import { useRouter } from "expo-router";
+import { useState } from "react";
+import { Alert, Pressable, Text, TextInput, View } from "react-native";
+import { supabase } from "../lib/supabase";
 
 export default function Auth() {
   const [email, setEmail] = useState("");
@@ -13,9 +13,6 @@ export default function Auth() {
       email,
       password,
     });
-
-    console.log("SIGNUP DATA:", data);
-    console.log("SIGNUP ERROR:", error);
 
     if (error) {
       Alert.alert(error.message);
