@@ -111,8 +111,6 @@ export default function Note() {
       return null;
     }
 
-    // (10%) Client-side Validation: Checks size and format before uploading.
-
     const size = info.size ?? 0;
 
     if (size > MAX_SIZE) {
