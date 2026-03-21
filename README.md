@@ -31,4 +31,5 @@ npm run start
 After starting expo, you can:
 - scan the QR code with Expo Go on your phone, or
 - press a in the terminal to open the app in the Android emulator
+
 If you use the Android emulator, make sure it is already running before starting the app.
